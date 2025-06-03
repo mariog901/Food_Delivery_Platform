@@ -1,196 +1,303 @@
 package service;
-import modele.Restaurant;
-import modele.Adresa;
-import modele.Comanda;
-import modele.Livrator;
-import modele.Masina;
-import modele.Utilizator;
-import modele.Produs;
-import modele.Vehicul;
+import modele.*;
+import repository.*;
+import utils.DatabaseReset;
+
+import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.time.LocalDateTime;
 
 public class Test {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        DatabaseReset.resetAllTables();
         FoodDeliveryService service = new FoodDeliveryService();
+        AdresaRepository adresaRepository = new AdresaRepository();
+        UtilizatorRepository utilizatorRepository = new UtilizatorRepository();
+        RestaurantRepository restaurantRepository = new RestaurantRepository();
+        ProdusRepository produsRepository = new ProdusRepository();
+        ComandaRepository comandaRepository = new ComandaRepository();
+        RecenzieRepository recenzieRepository = new RecenzieRepository();
 
-        // 1. Initializare date de test
-        System.out.println("=== Initializare date de test ===");
-
-        // Creare adrese
-        Adresa adresaRestaurant1 = new Adresa("Str. Mihai Eminescu", "10", "Bucuresti", "010101");
-        Adresa adresaRestaurant2 = new Adresa("Bd. Unirii", "25", "Bucuresti", "010102");
-        Adresa adresaUtilizator1 = new Adresa("Str. George Enescu", "15", "Bucuresti", "010103");
-        Adresa adresaUtilizator2 = new Adresa("Str. Tudor Arghezi", "7", "Cluj-Napoca", "400000");
-
-        // Adaugare restaurante
-        Restaurant restaurantItalian = new Restaurant("Pizza Delight", adresaRestaurant1, "italiana", "meniu pizza", 0);
-        Restaurant restaurantAsian = new Restaurant("Wok Master", adresaRestaurant2, "asiatica", "meniu asiatic", 0);
-
-        service.adaugaRestaurante(restaurantItalian);
-        service.adaugaRestaurante(restaurantAsian);
-
-        // Adaugare produse in meniuri
-        System.out.println("\n=== Adaugare produse in meniuri ===");
-
-        List<Produs> produseItaliene = Arrays.asList(
-                new Produs("Pizza Margherita", 30.0, "Pizza cu sos de rosii si mozzarella"),
-                new Produs("Pizza Quattro Formaggi", 35.0, "Pizza cu 4 tipuri de branza"),
-                new Produs("Paste Carbonara", 25.0, "Paste cu sos carbonara"),
-                new Produs("Pizza Casei",40.0,"Pizza noastra faimoasa")
-        );
-
-        List<Produs> produseAsiatice = Arrays.asList(
-                new Produs("Sushi Sake", 40.0, "Sushi cu somon"),
-                new Produs("Ramen", 28.0, "Supe ramen traditionala"),
-                new Produs("Sushi Philadelphia" , 48.0 , "Sushi cu somon si castravete")
-        );
-
-        restaurantItalian.adaugaProduse(produseItaliene);
+        System.out.println("🍕═══════════════════════════════════════════════════════════════🍕");
+        System.out.println("           SISTEM FOOD DELIVERY - TESTARE COMPLETA             ");
+        System.out.println("🍕═══════════════════════════════════════════════════════════════🍕\n");
 
 
-        restaurantAsian.adaugaProduse(produseAsiatice);
+        System.out.println(" ----- CREARE ADRESE -----");
+        Optional<Adresa> adresa1Opt = adresaRepository.create(new Adresa("Str. Mihai Eminescu", "10", "Bucuresti", "010101"));
+        Optional<Adresa> adresa2Opt = adresaRepository.create(new Adresa("Bd. Unirii", "25", "Bucuresti", "010102"));
+        Optional<Adresa> adresa3Opt = adresaRepository.create(new Adresa("Str. George Enescu", "15", "Bucuresti", "010103"));
+        Optional<Adresa> adresa4Opt = adresaRepository.create(new Adresa("Str. Tudor Arghezi", "7", "Cluj-Napoca", "400000"));
+        Optional<Adresa> adresa5Opt = adresaRepository.create(new Adresa("Calea Victoriei", "120", "Bucuresti", "010104"));
+        Optional<Adresa> adresa6Opt = adresaRepository.create(new Adresa("Str. Republicii", "45", "Cluj-Napoca", "400001"));
+        Optional<Adresa> adresa7Opt = adresaRepository.create(new Adresa("Bd. Magheru", "88", "Bucuresti", "010105"));
+        Optional<Adresa> adresa8Opt = adresaRepository.create(new Adresa("Str. Memorandumului", "33", "Cluj-Napoca", "400002"));
 
-        // Adaugare utilizatori
-        Utilizator utilizator1 = new Utilizator(1, "Ion Popescu", "ion.popescu@email.com", "0722123456", adresaUtilizator1);
-        Utilizator utilizator2 = new Utilizator(2, "Maria Ionescu", "maria.ionescu@email.com", "0723123456", adresaUtilizator2);
+        if (!adresa1Opt.isPresent() || !adresa2Opt.isPresent() || !adresa3Opt.isPresent() ||
+                !adresa4Opt.isPresent() || !adresa5Opt.isPresent() || !adresa6Opt.isPresent() ||
+                !adresa7Opt.isPresent() || !adresa8Opt.isPresent()) {
+            System.err.println(" Eroare la salvarea adreselor!");
+            return;
+        }
 
-        service.adaugaUtilizator(utilizator1);
-        service.adaugaUtilizator(utilizator2);
+        Adresa adresa1 = adresa1Opt.get(), adresa2 = adresa2Opt.get(), adresa3 = adresa3Opt.get(), adresa4 = adresa4Opt.get();
+        Adresa adresa5 = adresa5Opt.get(), adresa6 = adresa6Opt.get(), adresa7 = adresa7Opt.get(), adresa8 = adresa8Opt.get();
 
-        // Adaugare livratori
-        Vehicul masina1 = new Masina("Dacia", "Logan", 2018, 15000, "berlina");
-        Vehicul masina2 = new Masina("Volkswagen", "Golf", 2020, 20000, "hatchback");
+        System.out.println(" Adrese salvate cu succes: " + adresa1.getId() + "-" + adresa8.getId());
 
-        Livrator livrator1 = new Livrator("Andrei Ionescu", "0722333444", masina1);
-        Livrator livrator2 = new Livrator("Mihai Popescu", "0722444555", masina2);
+        // 2. Creare utilizatori extinsi
+        System.out.println("\n ----- CREARE UTILIZATORI -----");
+        Utilizator[] utilizatori = {
+                new Utilizator(0, "Ion Popescu", "ion.popescu@email.com", "0722123456", adresa3),
+                new Utilizator(0, "Maria Ionescu", "maria.ionescu@email.com", "0723123456", adresa4),
+                new Utilizator(0, "Alexandru Popa", "alex.popa@email.com", "0724123456", adresa7),
+                new Utilizator(0, "Ana Georgescu", "ana.georgescu@email.com", "0725123456", adresa8),
+                new Utilizator(0, "Cristian Dumitrescu", "cristian.d@email.com", "0726123456", adresa5)
+        };
 
-        service.adaugaLivrator(livrator1);
-        service.adaugaLivrator(livrator2);
+        for (int i = 0; i < utilizatori.length; i++) {
+            Optional<Utilizator> utilOpt = utilizatorRepository.create(utilizatori[i]);
+            if (utilOpt.isPresent()) {
+                utilizatori[i] = utilOpt.get();
+                service.adaugaUtilizator(utilizatori[i]);
+                System.out.println(" " + utilizatori[i].getNume() + " (ID: " + utilizatori[i].getId() + ")");
+            }
+        }
 
-        System.out.println("Datele de test au fost incarcate cu succes!\n");
+        System.out.println("\n ----- CREARE RESTAURANTE -----");
+        Restaurant[] restaurante = {
+                new Restaurant(0, " Pizza Delight", adresa1, "italiana", 0),
+                new Restaurant(0, " Wok Master", adresa2, "asiatica", 0),
+                new Restaurant(0, " Doner Kebab House", adresa5, "turceasca", 0),
+                new Restaurant(0, " Burger Palace", adresa6, "americana", 0),
+                new Restaurant(0, " La Nonna", adresa7, "italiana", 0)
+        };
 
-        // 2. Testare functionalitati restaurante
-        System.out.println("=== Testare functionalitati restaurante ===");
+        for (int i = 0; i < restaurante.length; i++) {
+            Optional<Restaurant> restOpt = restaurantRepository.create(restaurante[i]);
+            if (restOpt.isPresent()) {
+                restaurante[i] = restOpt.get();
+                service.adaugaRestaurante(restaurante[i]);
+                System.out.println(" " + restaurante[i].getNume() + " (ID: " + restaurante[i].getId() + ") - " + restaurante[i].getTipBucatarie());
+            }
+        }
 
-        // Afisare restaurante sortate dupa rating
-        System.out.println("Restaurante sortate dupa rating:");
-        service.getRestauranteSortateDupaRating().forEach(r ->
-                System.out.println("- " + r.getNume() + " (" + r.getTipBucatarie() + "), Rating: " + r.getRating()));
+        // 4. Creare produse diverse pentru fiecare restaurant
+        System.out.println("\n ----- CREARE MENIURI -----");
 
-        // Cautare restaurante dupa tip
-        System.out.println("\nRestaurante italiene:");
+        // Pizza Delight
+        Produs[] produseItalian1 = {
+                new Produs("Pizza Margherita", 32.0, "Pizza clasica cu sos de rosii si mozzarella", restaurante[0].getId()),
+                new Produs("Pizza Quattro Stagioni", 45.0, "Pizza cu sunca, ciuperci, masline si anghinare", restaurante[0].getId()),
+                new Produs("Paste Carbonara", 28.0, "Paste cu sos carbonara autentic", restaurante[0].getId()),
+                new Produs("Lasagna Bolognese", 38.0, "Lasagna cu sos bolognese si branza", restaurante[0].getId())
+        };
+
+        // Wok Master
+        Produs[] produseAsian = {
+                new Produs("Sushi Mix", 55.0, "12 bucati sushi variante", restaurante[1].getId()),
+                new Produs("Pad Thai", 35.0, "Taitei thailandezi cu creveti", restaurante[1].getId()),
+                new Produs("Wok de Vita", 42.0, "Vita cu legume la wok", restaurante[1].getId()),
+                new Produs("Supa Tom Yum", 25.0, "Supa thailandeza picanta", restaurante[1].getId())
+        };
+
+        // Doner Kebab House
+        Produs[] produseTurcesc = {
+                new Produs("Doner Kebab", 22.0, "Kebab in lipie cu salata si sosuri", restaurante[2].getId()),
+                new Produs("Adana Kebab", 35.0, "Kebab picant la gratar", restaurante[2].getId()),
+                new Produs("Lahmacun", 18.0, "Pizza turceasca cu carne", restaurante[2].getId()),
+                new Produs("Baklava", 15.0, "Desert traditional turcesc", restaurante[2].getId())
+        };
+
+        // Burger Palace
+        Produs[] produseAmerican = {
+                new Produs("Classic Burger", 25.0, "Burger clasic cu vita si branza", restaurante[3].getId()),
+                new Produs("BBQ Burger", 32.0, "Burger cu sos BBQ si bacon", restaurante[3].getId()),
+                new Produs("Chicken Wings", 28.0, "Aripioare de pui picante", restaurante[3].getId()),
+                new Produs("Cartofi Wedges", 15.0, "Cartofi wedges cu sosuri", restaurante[3].getId())
+        };
+
+        // La Nonna
+        Produs[] produseItalian2 = {
+                new Produs("Risotto ai Funghi", 38.0, "Risotto cu ciuperci porcini", restaurante[4].getId()),
+                new Produs("Osso Buco", 65.0, "Jarret de vita cu risotto", restaurante[4].getId()),
+                new Produs("Tiramisu", 22.0, "Desert italian clasic", restaurante[4].getId()),
+                new Produs("Bruschetta", 18.0, "Bruschetta cu rosii si busuioc", restaurante[4].getId())
+        };
+
+        List<Produs> toateProdusele = new ArrayList<>();
+        Produs[][] allProduseArrays = {produseItalian1, produseAsian, produseTurcesc, produseAmerican, produseItalian2};
+
+        for (int i = 0; i < allProduseArrays.length; i++) {
+            System.out.println(" Meniul " + restaurante[i].getNume() + ":");
+            for (Produs produs : allProduseArrays[i]) {
+                Optional<Produs> prodOpt = produsRepository.create(produs);
+                if (prodOpt.isPresent()) {
+                    Produs savedProdus = prodOpt.get();
+                    toateProdusele.add(savedProdus);
+                    restaurante[i].adaugaProduse(savedProdus);
+                    System.out.println(" " + savedProdus.getNume() + " - " + savedProdus.getPret() + " lei");
+                }
+            }
+            System.out.println();
+        }
+
+        // 5. Plasare comenzi multiple
+        System.out.println(" ----- PLASARE COMENZI -----");
+        List<Comanda> comenziSalvate = new ArrayList<>();
+
+        // Comanda 1: Ion la Pizza Delight
+        List<Produs> produseComanda1 = Arrays.asList(toateProdusele.get(0), toateProdusele.get(2)); // Pizza + Paste
+        Comanda comanda1 = new Comanda(utilizatori[0], restaurante[0], produseComanda1);
+        Optional<Comanda> cmd1Opt = comandaRepository.create(comanda1);
+        if (cmd1Opt.isPresent()) {
+            comanda1 = cmd1Opt.get();
+            comandaRepository.saveProdusePentruComanda(comanda1);
+            comenziSalvate.add(comanda1);
+            System.out.println(" Comanda #" + comanda1.getId() + ": " + utilizatori[0].getNume() +
+                    " -> " + restaurante[0].getNume() + " (" + comanda1.getCost() + " lei)");
+        }
+
+        // Comanda 2: Maria la Wok Master
+        List<Produs> produseComanda2 = Arrays.asList(toateProdusele.get(4), toateProdusele.get(6)); // Sushi + Wok
+        Comanda comanda2 = new Comanda(utilizatori[1], restaurante[1], produseComanda2);
+        Optional<Comanda> cmd2Opt = comandaRepository.create(comanda2);
+        if (cmd2Opt.isPresent()) {
+            comanda2 = cmd2Opt.get();
+            comandaRepository.saveProdusePentruComanda(comanda2);
+            comenziSalvate.add(comanda2);
+            System.out.println(" Comanda #" + comanda2.getId() + ": " + utilizatori[1].getNume() +
+                    " -> " + restaurante[1].getNume() + " (" + comanda2.getCost() + " lei)");
+        }
+
+        // Comanda 3: Alexandru la Burger Palace
+        List<Produs> produseComanda3 = Arrays.asList(toateProdusele.get(12), toateProdusele.get(14)); // Burger + Wings
+        Comanda comanda3 = new Comanda(utilizatori[2], restaurante[3], produseComanda3);
+        Optional<Comanda> cmd3Opt = comandaRepository.create(comanda3);
+        if (cmd3Opt.isPresent()) {
+            comanda3 = cmd3Opt.get();
+            comandaRepository.saveProdusePentruComanda(comanda3);
+            comenziSalvate.add(comanda3);
+            System.out.println(" Comanda #" + comanda3.getId() + ": " + utilizatori[2].getNume() +
+                    " -> " + restaurante[3].getNume() + " (" + comanda3.getCost() + " lei)");
+        }
+
+        // Comanda 4: Ana la La Nonna
+        List<Produs> produseComanda4 = Arrays.asList(toateProdusele.get(16), toateProdusele.get(18)); // Risotto + Tiramisu
+        Comanda comanda4 = new Comanda(utilizatori[3], restaurante[4], produseComanda4);
+        Optional<Comanda> cmd4Opt = comandaRepository.create(comanda4);
+        if (cmd4Opt.isPresent()) {
+            comanda4 = cmd4Opt.get();
+            comandaRepository.saveProdusePentruComanda(comanda4);
+            comenziSalvate.add(comanda4);
+            System.out.println(" Comanda #" + comanda4.getId() + ": " + utilizatori[3].getNume() +
+                    " -> " + restaurante[4].getNume() + " (" + comanda4.getCost() + " lei)");
+        }
+
+        // Comanda 5: Cristian la Doner Kebab House
+        List<Produs> produseComanda5 = Arrays.asList(toateProdusele.get(8), toateProdusele.get(11)); // Doner + Baklava
+        Comanda comanda5 = new Comanda(utilizatori[4], restaurante[2], produseComanda5);
+        Optional<Comanda> cmd5Opt = comandaRepository.create(comanda5);
+        if (cmd5Opt.isPresent()) {
+            comanda5 = cmd5Opt.get();
+            comandaRepository.saveProdusePentruComanda(comanda5);
+            comenziSalvate.add(comanda5);
+            System.out.println(" Comanda #" + comanda5.getId() + ": " + utilizatori[4].getNume() +
+                    " -> " + restaurante[2].getNume() + " (" + comanda5.getCost() + " lei)");
+        }
+
+        // 6. Adaugare recenzii multiple
+        System.out.println("\n ===== ADAUGARE RECENZII =====");
+
+        // Recenzii pentru Pizza Delight
+        service.adaugaRecenzie(comanda1, 4, "Pizza delicioasa, pastele excelente!");
+
+        // Comanda suplimentara pentru Pizza Delight (pentru rating)
+        List<Produs> produseExtra1 = Arrays.asList(toateProdusele.get(1)); // Pizza Quattro Stagioni
+        Comanda comandaExtra1 = new Comanda(utilizatori[2], restaurante[0], produseExtra1);
+        Optional<Comanda> cmdExtra1Opt = comandaRepository.create(comandaExtra1);
+        if (cmdExtra1Opt.isPresent()) {
+            comandaExtra1 = cmdExtra1Opt.get();
+            comandaRepository.saveProdusePentruComanda(comandaExtra1);
+            service.adaugaRecenzie(comandaExtra1, 5.0, "Cea mai buna pizza din oras!");
+        }
+
+        // Recenzii pentru Wok Master
+        service.adaugaRecenzie(comanda2, 4.8, "Sushi fresh, wok-ul perfect condimentat!");
+
+        List<Produs> produseExtra2 = Arrays.asList(toateProdusele.get(7)); // Supa Tom Yum
+        Comanda comandaExtra2 = new Comanda(utilizatori[4], restaurante[1], produseExtra2);
+        Optional<Comanda> cmdExtra2Opt = comandaRepository.create(comandaExtra2);
+        if (cmdExtra2Opt.isPresent()) {
+            comandaExtra2 = cmdExtra2Opt.get();
+            comandaRepository.saveProdusePentruComanda(comandaExtra2);
+            service.adaugaRecenzie(comandaExtra2, 4.2, "Supa prea picanta ,dar gustoasa!");
+        }
+
+        // Recenzii pentru restul restaurantelor
+        service.adaugaRecenzie(comanda3, 4.0, "Burger bun, aripioarele crocante!");
+        service.adaugaRecenzie(comanda4, 4.9, "Experienta culinara extraordinara! Osso Buco perfect!");
+        service.adaugaRecenzie(comanda5, 3.8, "Doner gustos, baklava dulce. Servire rapida.");
+
+        // 7. Demonstrare functionalitati
+        System.out.println("\n ----- DEMONSTRARE FUNCTIONALITATI -----");
+
+        // Incarcare restaurante cu rating-uri actualizate
+        List<Restaurant> restauranteDinDB = restaurantRepository.getAll();
+        System.out.println(" RESTAURANTE CU RATING-URI ACTUALIZATE:");
+        for (Restaurant r : restauranteDinDB) {
+            System.out.printf("   %-25s | Rating: %.1f | Produse: %d | Tip: %s%n",
+                    r.getNume(), r.getRating(), r.getMeniu().getProduse().size(), r.getTipBucatarie());
+        }
+
+        // Cautare dupa tip bucatarie
+        System.out.println("\n RESTAURANTE ITALIENE:");
         service.cautaRestauranteDupaTip("italiana").forEach(r ->
-                System.out.println("- " + r.getNume()));
+                System.out.println("    " + r.getNume() + " - Rating: " + String.format("%.1f", r.getRating())));
 
-        System.out.println("\nRestaurante asiatice:");
+        System.out.println("\n RESTAURANTE ASIATICE:");
         service.cautaRestauranteDupaTip("asiatica").forEach(r ->
-                System.out.println("- " + r.getNume()));
+                System.out.println("    " + r.getNume() + " - Rating: " + String.format("%.1f", r.getRating())));
 
-        // 3. Testare functionalitati comenzi
-        System.out.println("\n=== Testare functionalitati comenzi ===");
+        System.out.println("\n RESTAURANTE AMERICANE:");
+        service.cautaRestauranteDupaTip("americana").forEach(r ->
+                System.out.println("    " + r.getNume() + " - Rating: " + String.format("%.1f", r.getRating())));
 
-        // Creare comenzi
-        List<Produs> comanda1Produse = new ArrayList<>();
-        Produs pm = restaurantItalian.gasesteProdusDupaNume("Pizza Margherita");
-        Produs pc = restaurantItalian.gasesteProdusDupaNume("Paste Carbonara");
-        Produs pcasei = restaurantItalian.gasesteProdusDupaNume("Pizza Casei");
+        System.out.println("\n RESTAURANTE TURCESTI:");
+        service.cautaRestauranteDupaTip("turceasca").forEach(r ->
+                System.out.println("    " + r.getNume() + " - Rating: " + String.format("%.1f", r.getRating())));
 
-        if (pm != null) comanda1Produse.add(pm);
-        if (pc != null) comanda1Produse.add(pc);
-        if(pcasei!=null) comanda1Produse.add(pcasei);
-
-        List<Produs> comanda2Produse = new ArrayList<>();
-        Produs r = restaurantAsian.gasesteProdusDupaNume("Ramen");
-        Produs sp = restaurantAsian.gasesteProdusDupaNume("Sushi Philadelphia");
-
-
-        if (r != null) comanda2Produse.add(r);
-        if (sp != null) comanda2Produse.add(sp);
-
-        Comanda comanda1 = service.creeazaComanda(restaurantItalian, utilizator1, comanda1Produse);
-        Comanda comanda2 = service.creeazaComanda(restaurantAsian, utilizator2, comanda2Produse);
-        Comanda comanda3 = service.creeazaComanda(restaurantItalian,utilizator1,comanda1Produse);
-
-
-        System.out.println("Au fost create 2 comenzi:");
-        System.out.println("- Comanda #" + comanda1.getId() + " pentru " + utilizator1.getNume() + ", total: " + comanda1.getCost() + " lei");
-        System.out.println("- Comanda #" + comanda2.getId() + " pentru " + utilizator2.getNume() + ", total: " + comanda2.getCost() + " lei");
-
-        // Asignare livratori
-        service.asigneazaLivrator(comanda1, livrator1);
-        service.asigneazaLivrator(comanda2, livrator2);
-        service.asigneazaLivrator(comanda3,livrator1);
-
-        System.out.println("\nComenzi asignate livratorilor:");
-        System.out.println("- Livrator " + livrator1.getNume() + " are " + livrator1.getComenziLivrate().size() + " comenzi");
-        System.out.println("- Livrator " + livrator2.getNume() + " are " + livrator2.getComenziLivrate().size() + " comenzi");
-
-        // 4. Testare functionalitati recenzii
-        System.out.println("\n=== Testare functionalitati recenzii ===");
-
-        service.adaugaRecenzie(comanda1, 5, "Foarte buna pizza si pastele erau excelente!");
-        service.adaugaRecenzie(comanda2, 4, "Sushi-ul a fost bun, dar livrarea a intarziat putin.");
-        service.adaugaRecenzie(comanda3,  4.6, "Excelenta pizza , dar a intarziat curierul cu 5-6 minute");
-
-        System.out.println("Recenzii adaugate. Ratinguri actualizate:");
-        System.out.println("- " + restaurantItalian.getNume() + ": " + restaurantItalian.getRating());
-        System.out.println("- " + restaurantAsian.getNume() + ": " + restaurantAsian.getRating());
-
-        // 5. Testare afisare istoric comenzi
-        System.out.println("\n=== Testare istoric comenzi ===");
-
-        System.out.println("Istoric comenzi pentru " + utilizator1.getNume() + ":");
-        service.afiseazaComenziUtilizator(1);
-
-        System.out.println("\nIstoric comenzi pentru " + utilizator2.getNume() + ":");
-        service.afiseazaComenziUtilizator(2);
-
-        System.out.println("\n");
-        service.afiseazaComenziRestaurant("Pizza Delight");
-        System.out.println("\n");
-        service.afiseazaComenziRestaurant("Wok Master");
-
-        // 6. Testare actualizare status comenzi
-        System.out.println("\n=== Testare actualizare status comenzi ===");
-
-        comanda1.actualizeazaStatus("livrata");
-        comanda1.setDataLivrare(LocalDateTime.now());
-
-        System.out.println("Status comanda #" + comanda1.getId() + ": " + comanda1.getStatus());
-        System.out.println("Data livrare: " + comanda1.getDataLivrare());
-
-        // 7. Testare vehicule livratori
-        System.out.println("\n=== Testare detalii livratori ===");
-
-        System.out.println("Detalii livrator " + livrator1.getNume() + ":");
-        System.out.println("- Vehicul: " + livrator1.getVehicul().getMarca() + " " + livrator1.getVehicul().getModel());
-        if (livrator1.getVehicul() instanceof Masina) {
-            Masina m1 = (Masina) livrator1.getVehicul();
-            System.out.println("- Tip caroserie: " + m1.getTipCaroserie());
+        // Top restaurante dupa rating
+        System.out.println("\n TOP RESTAURANTE DUPA RATING:");
+        List<Restaurant> topRestaurante = service.getRestauranteSortateDupaRating();
+        for (int i = 0; i < topRestaurante.size(); i++) {
+            Restaurant r = topRestaurante.get(i);
+            String medal = i == 0 ? "" : i == 1 ? "" : i == 2 ? " " : " ";
+            System.out.printf("   %s %d. %-25s | %.1f | %s%n",
+                    medal, (i+1), r.getNume(), r.getRating(), r.getTipBucatarie());
         }
 
-        System.out.println("\nDetalii livrator " + livrator2.getNume() + ":");
-        System.out.println("- Vehicul: " + livrator2.getVehicul().getMarca() + " " + livrator2.getVehicul().getModel());
-        if (livrator2.getVehicul() instanceof Masina) {
-            Masina m2 = (Masina) livrator2.getVehicul();
-            System.out.println("- Tip caroserie: " + m2.getTipCaroserie());
-        }
+        // Statistici finale
+        System.out.println("\n ----- STATISTICI FINALE ------");
+        System.out.println(" Adrese create: " + adresa8.getId());
+        System.out.println(" Utilizatori inregistrati: " + utilizatori.length);
+        System.out.println(" Restaurante active: " + restaurante.length);
+        System.out.println(" Produse in meniuri: " + toateProdusele.size());
+        System.out.println(" Comenzi plasate: " + (comenziSalvate.size() + 2)); // +2 pentru comenzile extra
+        System.out.println(" Recenzii acordate: " + (comenziSalvate.size() + 2));
 
+        double ratingMediu = restauranteDinDB.stream()
+                .mapToDouble(Restaurant::getRating)
+                .filter(rating -> rating > 0)
+                .average()
+                .orElse(0.0);
+        System.out.printf(" Rating mediu sistem: %.1f%n", ratingMediu);
 
-        // 8. Testare adaugare produse noi
-        System.out.println("\n=== Testare adaugare produse noi ===");
-
-        Produs tiramisu = new Produs("Tiramisu", 15.0, "Desert italian clasic");
-        restaurantItalian.adaugaProduse(tiramisu);
-
-        System.out.println("Produse actuale in meniul " + restaurantItalian.getNume() + ":");
-        restaurantItalian.getMeniu().getProduse().forEach(p ->
-                System.out.println("- " + p.getNume() + " (" + p.getPret() + " lei)"));
-        System.out.println("Produse actuale in meniul " + restaurantAsian.getNume() + ":");
-        restaurantAsian.getMeniu().getProduse().forEach(p ->
-                System.out.println("- " + p.getNume() + " (" + p.getPret() + " lei)"));
+        System.out.println("\n═══════════════════════════════════════════════════════════════");
+        System.out.println("             TESTARE COMPLETA CU SUCCES!                      ");
+        System.out.println("═══════════════════════════════════════════════════════════════");
     }
 }

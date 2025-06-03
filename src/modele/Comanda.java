@@ -3,10 +3,9 @@ package modele;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
-public class Comanda {
-    private static int nextId=1;
-
-    private int Id;
+import repository.HasId;
+public class Comanda implements HasId{
+    private int id;
     private Utilizator utilizator;
     private Restaurant restaurant;
     private double cost;
@@ -16,14 +15,32 @@ public class Comanda {
     private LocalDateTime dataPlasare;
     private LocalDateTime dataLivrare;
 
-    public Comanda(Utilizator utilizator, Restaurant restaurant,List<Produs>produse) {
-        this.Id=nextId++;
+    public Comanda(int id,Utilizator utilizator, Restaurant restaurant,List<Produs>produse) {
+        this.id=id;
         this.utilizator=utilizator;
         this.restaurant=restaurant;
         this.produse=new ArrayList<>(produse);
         this.cost=produse.stream().mapToDouble(Produs::getPret).sum();
         this.status="plasata";
         this.dataPlasare=LocalDateTime.now();
+    }
+    public Comanda(Utilizator utilizator, Restaurant restaurant,List<Produs>produse) {
+        this.utilizator=utilizator;
+        this.restaurant=restaurant;
+        this.produse=new ArrayList<>(produse);
+        this.cost=produse.stream().mapToDouble(Produs::getPret).sum();
+        this.status="plasata";
+        this.dataPlasare=LocalDateTime.now();
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void adaugaRecenzie(Recenzie recenzie){
@@ -37,21 +54,8 @@ public class Comanda {
         }
     }
 
-    public static int getNextId() {
-        return nextId;
-    }
 
-    public static void setNextId(int nextId) {
-        Comanda.nextId = nextId;
-    }
 
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
-    }
 
     public Utilizator getUtilizator() {
         return utilizator;

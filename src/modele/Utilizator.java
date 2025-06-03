@@ -1,9 +1,9 @@
 package modele;
 import java.util.ArrayList;
 import java.util.List;
+import repository.HasId;
 
-
-public class Utilizator  {
+public class Utilizator implements HasId {
     private int idClient;
     private String nume;
     private String email;
@@ -20,18 +20,20 @@ public class Utilizator  {
         this.istoricComenzi = new ArrayList<>();
     }
 
+    @Override
+    public int getId() {
+        return idClient;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.idClient = id;
+    }
+
     public void adaugaComanda(Comanda comanda){
         istoricComenzi.add(comanda);
     }
 
-
-    public int getIdClient() {
-        return idClient;
-    }
-
-    public void setIdClient(int idClient) {
-        this.idClient = idClient;
-    }
 
     public String getNume() {
         return nume;

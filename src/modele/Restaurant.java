@@ -2,8 +2,10 @@ package modele;
 
 import java.util.ArrayList;
 import java.util.List;
+import repository.HasId;
 
-public class Restaurant {
+public class Restaurant implements HasId {
+    private int id;
     private String nume;
     private Adresa adresa;
     private double rating;
@@ -12,13 +14,14 @@ public class Restaurant {
     private List<Recenzie>recenzii;
     private List<Comanda> comenzi;
 
-    public Restaurant(String nume, Adresa adresa,String tipBucatarie, String meniu, double rating) {
+    public Restaurant(int id,String nume, Adresa adresa,String tipBucatarie, double rating) {
+        this.id = id;
         this.nume = nume;
         this.adresa = adresa;
         this.tipBucatarie = tipBucatarie;
         this.meniu = new Meniu();
         this.recenzii=new ArrayList<>();
-        this.rating = 0;
+        this.rating = rating;
         this.comenzi=new ArrayList<>();
     }
 
@@ -27,7 +30,13 @@ public class Restaurant {
         calculeazaRating();
     }
 
-
+    @Override
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     public String getNume() {
         return nume;
     }
